@@ -138,16 +138,23 @@ int main()
 
 	//Greenwich Sidereal Time (GST)
 
-	double gst = calculateGST(julianDate, hour, minute, second, static_cast<double>(ms));
-	//GST Verification
-	cout << "Greenwich Sidereal Time: " << convertToReadableTime(gst) << endl;
+	while (true) {
+		double gst = calculateGST(julianDate, hour, minute, second, static_cast<double>(ms));
+		//GST Verification
+		cout << "Greenwich Sidereal Time: " << convertToReadableTime(gst) << endl;
 
-	//Local Sidereal Time
-	double longitude;
-	cout << "Enter longitude: " << endl;
-	cin >> longitude;
-	double lst = calculateLST(gst, longitude);
-	cout << "Local Sidreal Time: " << convertToReadableTime(lst) << endl;
+		//Local Sidereal Time
+		double longitude;
+		cout << "Enter longitude: " << endl;
+		cin >> longitude;
+		while (true) {
+			double lst = calculateLST(gst, longitude);
+			cout << "\rLocal Sidreal Time: " << convertToReadableTime(lst) << flush;
+			gst += 1.0 / 3600.0;
+			if (gst >= 24) gst -= 24;
+			this_thread::sleep_for(chrono::seconds(1s));
+		}
+		return 0;
 
-	return 0;
+	}
 }
